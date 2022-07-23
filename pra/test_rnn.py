@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from tensorflow.python.keras.models import load_model
 
-df = pd.read_excel('dataframe.xlsx')
+df = pd.read_excel('pra/dataframe.xlsx')
 #메인 변수 5개 - 소비자물가, 금리, 국내총생산, 신생아 출산인구, 합계 출산율
 #Y값(레이블) - 수도권 인구 과밀화율
 X = df.iloc[:,0:5] #0~5까지 열, 즉 메인변수들
@@ -20,33 +20,32 @@ for i in range(278):
     numpY[i]=y[i]
 
 #training set과 test set으로 나누기 #랜덤으로 스플릿
-X_train,X_test,y_train,y_test=train_test_split(X_norm, numpY, test_size=0.2, random_state=42,shuffle=True)
+X_train,X_test,y_train,y_test=train_test_split(X_norm, numpY, test_size=0.2, random_state=42)
 X_train = X_train.reshape(X_train.shape[0],X_train.shape[1],1)
 y_train = y_train.reshape(y_train.shape[0],y_train.shape[1],1)
 # 모델 구조 정의하기
 model = tf.keras.Sequential() #메인변수 5개라서 input shape = 5. 활성함수 sigmoid로 
-model.add(layers.LSTM(32,input_shape=(5,1),return_sequences=True))
-model.add(layers.LSTM(16, return_sequences = True))
-model.add(layers.LSTM(8, return_sequences = True))
-model.add(layers.LSTM(4, return_sequences = False))
+model.add(layers.LSTM(10,input_shape=(5,1),return_sequences=True))
+# model.add(layers.LSTM(16, return_sequences = True))
+# model.add(layers.LSTM(8, return_sequences = True))
+# model.add(layers.LSTM(4, return_sequences = False))
 
-# model.add(layers.SimpleRNN(10, input_shape=[5, 1]))
-model.add(layers.Dense(2))
-model.add(layers.Dense(8))
-model.add(layers.Dense(16))
-model.add(layers.Dense(32))
-model.add(layers.Dense(64))
-model.add(layers.Dense(32))
-model.add(layers.Dense(16))
-model.add(layers.Dense(8))
-model.add(layers.Dense(4))
-
+# # model.add(layers.SimpleRNN(10, input_shape=[5, 1]))
+# model.add(layers.Dense(2))
+# model.add(layers.Dense(8))
+# model.add(layers.Dense(16))
+# model.add(layers.Dense(32))
+# model.add(layers.Dense(64))
+# model.add(layers.Dense(32))
+# model.add(layers.Dense(16))
+# model.add(layers.Dense(8))
+# model.add(layers.Dense(4))
 model.add(layers.Dense(1)) #활성함수 relu
-model.summary()
+# model.summary()
 
 # 모델 구축하기
 model.compile(
-        loss='mse',         # mean_squared_error(평균제곱오차)의 alias
+        loss='mean_squared_error',         # mean_squared_error(평균제곱오차)의 alias
         optimizer='adam',   # 최적화 기법 중 하나
         metrics=['mae'])    # 실험 후 관찰하고 싶은 metric 들을 나열함. 
 
